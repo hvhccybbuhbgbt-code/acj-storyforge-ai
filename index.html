@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ACJ StoryForge AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0b12;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 850px;
+      margin: auto;
+      padding: 30px 0;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 30px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #15151f;
+      border: 1px solid #292938;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      border: 1px solid #343445;
+      border-radius: 12px;
+      background: #0e0e16;
+      color: white;
+      padding: 15px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #7777ff;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .option {
+      background: #0e0e16;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #292938;
+    }
+
+    .option input {
+      margin-right: 8px;
+    }
+
+    .generate {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #000000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .generate:active {
+      transform: scale(0.98);
+    }
+
+    .output {
+      display: none;
+    }
+
+    .output h2 {
+      margin-bottom: 15px;
+    }
+
+    .output-box {
+      white-space: pre-wrap;
+      background: #0e0e16;
+      border: 1px solid #292938;
+      border-radius: 12px;
+      padding: 15px;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .footer {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <div class="logo">ACJ STORYFORGE AI</div>
+      <div class="subtitle">
+        Hindi Story → Anime Scenes → Video Prompts
+      </div>
+    </div>
+
+    <div class="card">
+
+      <label for="story">
+        अपनी कहानी यहाँ लिखें
+      </label>
+
+      <textarea
+        id="story"
+        placeholder="अपनी पूरी कहानी यहाँ paste करें..."
+      ></textarea>
+
+      <div class="options">
+
+        <div class="option">
+          <label>
+            <input type="checkbox" id="character" checked>
+            Character Consistency
+          </label>
+        </div>
+
+        <div class="option">
+          <label>
+            <input type="checkbox" id="image" checked>
+            Anime Image Prompts
+          </label>
+        </div>
+
+        <div class="option">
+          <label>
+            <input type="checkbox" id="video" checked>
+            Video Prompts
+          </label>
+        </div>
+
+      </div>
+
+      <button class="generate" onclick="generateProject()">
+        GENERATE PROJECT
+      </button>
+
+    </div>
+
+    <div class="card output" id="output">
+
+      <h2>Generated Project</h2>
+
+      <div class="output-box" id="outputText"></div>
+
+    </div>
+
+    <div class="footer">
+      © 2026 ACJ StoryForge AI
+    </div>
+
+  </div>
+
+
+  <script>
+
+    function generateProject() {
+
+      const story = document.getElementById("story").value.trim();
+
+      if (!story) {
+        alert("पहले अपनी कहानी लिखें।");
+        return;
+      }
+
+      const character =
+        document.getElementById("character").checked;
+
+      const image =
+        document.getElementById("image").checked;
+
+      const video =
+        document.getElementById("video").checked;
+
+      let result = "";
+
+      result += "ACJ STORYFORGE AI\n";
+      result += "========================\n\n";
+
+      result += "PROJECT ANALYSIS\n\n";
+
+      if (character) {
+        result += "✓ Character Consistency Enabled\n";
+      }
+
+      if (image) {
+        result += "✓ Anime Image Prompts Enabled\n";
+      }
+
+      if (video) {
+        result += "✓ Video Prompts Enabled\n";
+      }
+
+      result += "\n------------------------\n\n";
+
+      result += "YOUR STORY:\n\n";
+      result += story;
+
+      result += "\n\n------------------------\n";
+      result += "\nAI generation system will be connected here next.\n";
+
+      document.getElementById("outputText").textContent = result;
+
+      document.getElementById("output").style.display = "block";
+
+      document.getElementById("output").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+  </script>
+
+</body>
+</html>
