@@ -105,6 +105,11 @@
       cursor: pointer;
     }
 
+    .generate:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
     .generate:active {
       transform: scale(0.98);
     }
@@ -125,6 +130,17 @@
       padding: 15px;
       color: #ccc;
       line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .loading {
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .error {
+      color: #ff7777;
     }
 
     .footer {
@@ -142,6 +158,7 @@
 
     <div class="header">
       <div class="logo">ACJ STORYFORGE AI</div>
+
       <div class="subtitle">
         Hindi Story → Anime Scenes → Video Prompts
       </div>
@@ -183,7 +200,11 @@
 
       </div>
 
-      <button class="generate" onclick="generateProject()">
+      <button
+        class="generate"
+        id="generateButton"
+        onclick="generateProject()"
+      >
         GENERATE PROJECT
       </button>
 
@@ -206,14 +227,14 @@
 
   <script>
 
-    function generateProject() {
+    const API_URL =
+      "https://acj-storyforge-api.hvhccybbuhbgbt.workers.dev";
 
-      const story = document.getElementById("story").value.trim();
 
-      if (!story) {
-        alert("पहले अपनी कहानी लिखें।");
-        return;
-      }
+    async function generateProject() {
+
+      const story =
+        document.getElementById("story").value.trim();
 
       const character =
         document.getElementById("character").checked;
@@ -224,40 +245,119 @@
       const video =
         document.getElementById("video").checked;
 
-      let result = "";
+      const button =
+        document.getElementById("generateButton");
 
-      result += "ACJ STORYFORGE AI\n";
-      result += "========================\n\n";
+      const output =
+        document.getElementById("output");
 
-      result += "PROJECT ANALYSIS\n\n";
+      const outputText =
+        document.getElementById("outputText");
 
-      if (character) {
-        result += "✓ Character Consistency Enabled\n";
+
+      if (!story) {
+
+        alert("पहले अपनी कहानी लिखें।");
+
+        return;
       }
 
-      if (image) {
-        result += "✓ Anime Image Prompts Enabled\n";
-      }
 
-      if (video) {
-        result += "✓ Video Prompts Enabled\n";
-      }
+      button.disabled = true;
 
-      result += "\n------------------------\n\n";
+      button.textContent = "GENERATING...";
 
-      result += "YOUR STORY:\n\n";
-      result += story;
+      output.style.display = "block";
 
-      result += "\n\n------------------------\n";
-      result += "\nAI generation system will be connected here next.\n";
+      outputText.className = "output-box loading";
 
-      document.getElementById("outputText").textContent = result;
+      outputText.textContent =
+        "AI आपकी कहानी को analyse कर रहा है...\n\nकृपया थोड़ा इंतज़ार करें।";
 
-      document.getElementById("output").style.display = "block";
 
-      document.getElementById("output").scrollIntoView({
+      output.scrollIntoView({
         behavior: "smooth"
       });
+
+
+      try {
+
+        const response = await fetch(
+          API_URL,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+              story: story,
+
+              options: {
+                characterConsistency: character,
+                animeImagePrompts: image,
+                videoPrompts: video
+              }
+
+            })
+          }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.details ||
+            data.error ||
+            "AI request failed"
+          );
+
+        }
+
+
+        if (!data.success) {
+
+          throw new Error(
+            data.error ||
+            "Gemini ने कोई result नहीं दिया।"
+          );
+
+        }
+
+
+        outputText.className = "output-box";
+
+        outputText.textContent =
+          data.result ||
+          "कोई result प्राप्त नहीं हुआ।";
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        outputText.className =
+          "output-box error";
+
+        outputText.textContent =
+          "❌ Generation failed\n\n" +
+          error.message +
+          "\n\nकृपया दोबारा कोशिश करें।";
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "GENERATE PROJECT";
+
+      }
+
     }
 
   </script>
